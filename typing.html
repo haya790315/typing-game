@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="typing.css" />
+    <title>Typing Game</title>
+  </head>
+  <body>
+    <p id="count">60</p>
+    <div class="wrap">
+      <p id="text"></p>
+    </div>
+
+    <button id="start">スタート</button>
+
+    <script>
+      const text = [
+        "Hello",
+        "How are you",
+        "I miss you",
+        "long time no see",
+        "How is going on",
+        "Everything is good?",
+        "Do you know",
+        "Yuka I miss you so much",
+        "when can I see you again",
+        "I like you more than you can imagine",
+        "what if you can be my girlfriend",
+        "My life is completed",
+        "May I see you again",
+        "May I talk to you again",
+        "I know you have a wonderful life now",
+        "and I am so glad to see it",
+      ];
+      const button = document.getElementById("start");
+      const counter = document.getElementById("count");
+      const wrapper = document.querySelector(".wrap");
+      const context = document.getElementById("text");
+      let checkTexts = [];
+      let score = 0;
+
+      const start = () => {
+        keyDown();
+        setTimer();
+        createText();
+      };
+
+      const createText = () => {
+        wrapper.style.transform = "scaleY(2)";
+        context.innerHTML = "";
+        const random = Math.floor(Math.random() * text.length);
+        checkTexts = text[random].split("").map((value) => {
+          const span = document.createElement("span");
+          span.textContent = value;
+          context.appendChild(span);
+          return span;
+        });
+      };
+
+      const setTimer = () => {
+        let count = 60;
+        const countDown = function () {
+          count--;
+          // console.log(count);
+          counter.innerHTML = `${count}`;
+          if (count <= 0) {
+            gameOver();
+            return;
+          }
+          setTimeout(countDown, 1000);
+        };
+        countDown();
+      };
+
+      const keyDown = function () {
+        document.addEventListener("keydown", function (e) {
+          // let key = e.key;
+          // const spantexts = context.childNodes;
+          // spantextsArr = Array.from(spantexts);
+          // if(key === 'Shift') return;
+          // console.log(spantextsArr[0].textContent);
+          // if(key !== spantextsArr[0].textContent) wrapper.style.backgroundColor = 'red';
+          // if(key === spantextsArr[0].textContent) {
+          //   spantextsArr.shift();
+          //   wrapper.style.backgroundColor = '#666';}
+          // if(spantextsArr.length === 0) {
+          //     createText();
+          //     return};
+          // context.textContent = '';
+          // spantextsArr.map(element=> context.appendChild(element)) ;
+
+          if (e.key === "Shift") return;
+          if (e.key !== checkTexts[0].textContent) {
+            wrapper.style.backgroundColor = "red";
+          }
+          if (e.key === checkTexts[0].textContent) {
+            checkTexts[0].className = "add-color";
+            wrapper.style.backgroundColor = "#666";
+            checkTexts.shift();
+            score++;
+            console.log(score);
+          }
+          if (!checkTexts.length) createText();
+        });
+      };
+
+      const rankCheck = (score) => {
+        let text = "";
+        if (score > 0 && score < 99)
+          text = `${score}文字打てました\nあなたのランクはCです\nランクBまであと${
+            99 - score
+          }文字です`;
+        if (score > 100 && score < 199)
+          text = `${score}文字打てました\nあなたのランクはBです\nランクBまであと${
+            199 - score
+          }文字です`;
+        if (score > 200 && score < 299)
+          text = `${score}文字打てました\nあなたのランクはAです\nランクBまであと${
+            299 - score
+          }文字です`;
+        if (score > 300) text = `${score}文字打てました\nあなたのランクはSです`;
+
+        return `${score}文字打てました！\n${text}\n【OK】リトライ／【キャンセル】終了`;
+      };
+
+      const gameOver = () => {
+        result = confirm(rankCheck(score));
+        if (result) window.location.reload();
+      };
+
+      button.addEventListener("click", (e) => {
+        document.activeElement.blur();
+        button.style.display = "none";
+        start();
+      });
+    </script>
+  </body>
+</html>
